@@ -14,5 +14,9 @@ if(KITTAI_KEY_WORD_DETECTOR)
     target_link_libraries(KeywordDetectorProvider KITTAI)
 endif()
 
+if(SYNTIANT_KEY_WORD_DETECTOR)
+    target_link_libraries(KeywordDetectorProvider SYNTIANT)
+endif()
+
 # install target
 asdk_install()

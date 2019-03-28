@@ -18,6 +18,7 @@
 #       -DSENSORY_KEY_WORD_DETECTOR=ON 
 #           -DSENSORY_KEY_WORD_DETECTOR_LIB_PATH=<path-to-sensory-lib>
 #           -DSENSORY_KEY_WORD_DETECTOR_INCLUDE_DIR=<path-to-sensory-include-dir>
+#       -DSYNTIANT_KEY_WORD_DETECTOR=ON 
 #
 
 option(AMAZON_KEY_WORD_DETECTOR "Enable Amazon keyword detector." OFF)
@@ -26,8 +27,9 @@ option(AMAZONLITE_KEY_WORD_DETECTOR_DYNAMIC_MODEL_LOADING "Enable AmazonLite key
 option(KITTAI_KEY_WORD_DETECTOR "Enable KittAi keyword detector." OFF)
 option(KITTAI_KEY_WORD_DETECTOR_LEGACY_CPP_ABI "Use legacy ABI version of KittAi binary release." ON)
 option(SENSORY_KEY_WORD_DETECTOR "Enable Sensory keyword detector." OFF)
+option(SYNTIANT_KEY_WORD_DETECTOR "Enable Syntiant keyword detector." OFF)
 
-if(NOT AMAZON_KEY_WORD_DETECTOR AND NOT AMAZONLITE_KEY_WORD_DETECTOR AND NOT KITTAI_KEY_WORD_DETECTOR AND NOT SENSORY_KEY_WORD_DETECTOR)
+if(NOT AMAZON_KEY_WORD_DETECTOR AND NOT AMAZONLITE_KEY_WORD_DETECTOR AND NOT KITTAI_KEY_WORD_DETECTOR AND NOT SENSORY_KEY_WORD_DETECTOR AND NOT SYNTIANT_KEY_WORD_DETECTOR)
     message("No keyword detector type specified, skipping build of keyword detector.")
     return()
 endif()
@@ -91,5 +93,12 @@ if(SENSORY_KEY_WORD_DETECTOR)
     endif()
     add_definitions(-DKWD)
     add_definitions(-DKWD_SENSORY)
+    set(KWD ON)
+endif()
+
+if(SYNTIANT_KEY_WORD_DETECTOR)
+    message("Creating ${PROJECT_NAME} with keyword detector type: Syntiant")
+    add_definitions(-DKWD)
+    add_definitions(-DKWD_SYNTIANT)
     set(KWD ON)
 endif()

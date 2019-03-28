@@ -15,9 +15,11 @@
 
 #include "KWDProvider/KeywordDetectorProvider.h"
 
-#ifdef KWD_KITTAI
+#ifdef KWD_SYNTIANT
+#include <Syntiant/SyntiantKeywordDetector.h>
+#elif defined(KWD_KITTAI)
 #include <KittAi/KittAiKeyWordDetector.h>
-#elif KWD_SENSORY
+#elif defined(KWD_SENSORY)
 #include <Sensory/SensoryKeywordDetector.h>
 #endif
 
@@ -42,7 +44,13 @@ std::unique_ptr<kwd::AbstractKeywordDetector> KeywordDetectorProvider::create(
     std::unordered_set<std::shared_ptr<avsCommon::sdkInterfaces::KeyWordDetectorStateObserverInterface>>
         keyWordDetectorStateObservers,
     const std::string& pathToInputFolder) {
-#if defined(KWD_KITTAI)
+#if defined(KWD_SYNTIANT)
+    return kwd::SyntiantKeywordDetector::create(
+        stream,
+        audioFormat,
+        keyWordObservers,
+        keyWordDetectorStateObservers);
+#elif defined(KWD_KITTAI)
     return alexaClientSDK::kwd::KittAiKeyWordDetector::create(
         stream,
         audioFormat,

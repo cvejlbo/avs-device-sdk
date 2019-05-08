@@ -45,7 +45,8 @@ std::unique_ptr<SyntiantKeywordDetector> SyntiantKeywordDetector::create(
     avsCommon::utils::AudioFormat audioFormat,
     std::unordered_set<std::shared_ptr<avsCommon::sdkInterfaces::KeyWordObserverInterface>> keyWordObservers,
     std::unordered_set<std::shared_ptr<avsCommon::sdkInterfaces::KeyWordDetectorStateObserverInterface>>
-        keyWordDetectorStateObservers) {
+    keyWordDetectorStateObservers,
+    const std::string& kwdPipe) {
     if (!stream) {
         ACSDK_ERROR(LX("createFailed").d("reason", "nullStream"));
         return nullptr;
@@ -56,7 +57,7 @@ std::unique_ptr<SyntiantKeywordDetector> SyntiantKeywordDetector::create(
     std::unique_ptr<SyntiantKeywordDetector> detector(new SyntiantKeywordDetector(
         stream, keyWordObservers, keyWordDetectorStateObservers, audioFormat));
 
-    if (!detector->init()) {
+    if (!detector->init(kwdPipe)) {
 	ACSDK_ERROR(LX("createFailed").d("reason", "initDetectorFailed"));
         return nullptr;
     }
@@ -80,11 +81,17 @@ SyntiantKeywordDetector::SyntiantKeywordDetector(
         m_stream{stream} {
 }
 
-bool SyntiantKeywordDetector::init(void) {
+bool SyntiantKeywordDetector::init(const std::string& kwdPipe)
+{
     m_streamReader = m_stream->createReader(AudioInputStream::Reader::Policy::BLOCKING);
     if (!m_streamReader) {
         ACSDK_ERROR(LX("initFailed").d("reason", "createStreamReaderFailed"));
         return false;
+    }
+
+    m_kwdPipe = std::string(kwdPipe);
+    if (!m_kwdPipe.length()) {
+        m_kwdPipe = std::string("/home/pi/ndp-kwd");
     }
 
     m_isShuttingDown = false;
@@ -103,7 +110,8 @@ void SyntiantKeywordDetector::detectionLoop() {
 
     ACSDK_INFO(LX("Starting Syntiant detection loop"));
 
-    f = open("/home/pi/ndp-kwd", O_RDONLY);
+
+    f = open(m_kwdPipe.c_str(), O_RDONLY);
 
     while (!m_isShuttingDown) {
 	bool didErrorOccur = false;

@@ -49,7 +49,8 @@ std::unique_ptr<kwd::AbstractKeywordDetector> KeywordDetectorProvider::create(
         stream,
         audioFormat,
         keyWordObservers,
-        keyWordDetectorStateObservers);
+        keyWordDetectorStateObservers,
+        pathToInputFolder);
 #elif defined(KWD_KITTAI)
     return alexaClientSDK::kwd::KittAiKeyWordDetector::create(
         stream,

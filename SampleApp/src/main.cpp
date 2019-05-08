@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
             }
         }
     } else {
-#if defined(KWD_KITTAI) || defined(KWD_SENSORY)
+#if defined(KWD_KITTAI) || defined(KWD_SENSORY) || defined(KWD_SYNTIANT)
         if (argc < 3) {
             ConsolePrinter::simplePrint(
                 "USAGE: " + std::string(argv[0]) +

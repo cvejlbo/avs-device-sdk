@@ -45,14 +45,15 @@ public:
      * @param audioFormat The format of the audio data located within the stream.
      * @param keyWordObservers The observers to notify of keyword detections.
      * @param keyWordDetectorStateObservers The observers to notify of state changes in the engine.
-     * @param msToPushPerIteration - Not used
+     * @param kwdPipe The pipe used to communicate keywords from Syntiant SDK
      * @return A new @c SyntiantKeywordDetector, or @c nullptr if the operation failed.
      */
     static std::unique_ptr<SyntiantKeywordDetector> create(
         std::shared_ptr<AudioInputStream> stream,
         avsCommon::utils::AudioFormat audioFormat,
         std::unordered_set<std::shared_ptr<KeyWordObserverInterface>> keyWordObservers,
-        std::unordered_set<std::shared_ptr<KeyWordDetectorStateObserverInterface>> keyWordDetectorStateObservers);
+        std::unordered_set<std::shared_ptr<KeyWordDetectorStateObserverInterface>> keyWordDetectorStateObservers,
+        const std::string& kwdPipe);
 
     /**
      * Destructor.
@@ -76,7 +77,7 @@ private:
         avsCommon::utils::AudioFormat audioFormat
         );
 
-    bool init(void);
+    bool init(const std::string& kwdPipe);
 
     /// The main function that reads data and feeds it into the engine.
     void detectionLoop();
@@ -104,6 +105,9 @@ private:
      * sampling rate of the audio data passed in.
      */
     //const size_t m_maxSamplesPerPush;
+
+    std::string m_kwdPipe;
+
 
 };
 
